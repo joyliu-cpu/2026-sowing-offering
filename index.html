@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>撒種奉獻 認獻卡</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .card {
+            background-color: #ffffff;
+            max-width: 450px;
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+        .header {
+            background-color: #4a7c59; /* 溫和的草綠色，象徵撒種與生命力 */
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+        }
+        .header h2 {
+            margin: 0 0 10px 0;
+            font-size: 24px;
+            letter-spacing: 1.5px;
+        }
+        .header p {
+            margin: 0;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        .form-container {
+            padding: 30px 25px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333333;
+            font-size: 15px;
+        }
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cccccc;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        input:focus {
+            border-color: #4a7c59;
+            outline: none;
+        }
+        .currency-input {
+            position: relative;
+        }
+        .currency-input input {
+            padding-left: 30px;
+        }
+        .currency-input::before {
+            content: "$";
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666666;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: #4a7c59;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #386143;
+        }
+        .footer {
+            text-align: center;
+            padding: 15px;
+            font-size: 12px;
+            color: #888888;
+            background-color: #fafafa;
+            border-top: 1px solid #eeeeee;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="header">
+            <h2>撒種奉獻 認獻卡</h2>
+            <p>奉獻時間：2026/8/15-16</p>
+        </div>
+
+        <div class="form-container">
+            <form id="dedicationForm">
+                <div class="form-group">
+                    <label for="name">姓名</label>
+                    <input type="text" id="name" placeholder="請輸入您的姓名" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="cellGroup">小組</label>
+                    <input type="text" id="cellGroup" placeholder="請輸入您所屬的小組名稱" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="pastor">區牧</label>
+                    <input type="text" id="pastor" placeholder="請輸入您的區牧姓名" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="amount">認獻金額 (NTD)</label>
+                    <div class="currency-input">
+                        <input type="number" id="amount" min="1" placeholder="請輸入認獻金額" required>
+                    </div>
+                </div>
+
+                <button type="submit" id="submitBtn">確認送出</button>
+            </form>
+        </div>
+
+        <div class="footer">
+            凡甘心樂意的，必蒙神悅納。
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('dedicationForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // 防止網頁重新整理
+            
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.innerText = '處理中...';
+            submitBtn.disabled = true;
+
+            // ⚠️ 請記得將下方的網址替換成你在 Google Apps Script 部署後取得的「網頁應用程式 URL」
+            const url = 'https://script.google.com/macros/s/AKfycbxefRTSoWrjOGIzWM7JR6qM37crru1umnUV9g1WZZIVRJuyBl0Q70K80_PubGcq2pY_EA/exec'; 
+            
+            // 蒐集表單資料
+            const data = {
+                name: document.getElementById('name').value,
+                cellGroup: document.getElementById('cellGroup').value,
+                pastor: document.getElementById('pastor').value,
+                amount: document.getElementById('amount').value
+            };
+
+            // 傳送資料到 Google Sheets
+            fetch(url, {
+                method: 'POST',
+                mode: 'no-cors', // 處理跨網域問題
+                cache: 'no-cache',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                alert('感謝您的認獻，資料已成功登記！');
+                document.getElementById('dedicationForm').reset(); // 清空表單
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('送出失敗，請檢查網路連線或稍後再試。');
+            })
+            .finally(() => {
+                submitBtn.innerText = '確認送出';
+                submitBtn.disabled = false;
+            });
+        });
+    </script>
+
+</body>
+</html>
