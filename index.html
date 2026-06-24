@@ -54,6 +54,17 @@
             color: #333333;
             font-size: 15px;
         }
+        /* 為必填欄位的標題加上紅星 */
+        .required::after {
+            content: " *";
+            color: #de3545;
+        }
+        .optional-text {
+            font-size: 13px;
+            color: #888888;
+            font-weight: normal;
+            margin-left: 4px;
+        }
         input[type="text"], input[type="number"], select, textarea {
             width: 100%;
             padding: 12px;
@@ -70,7 +81,7 @@
             outline: none;
         }
         textarea {
-            resize: vertical; /* 允許使用者上下拉長輸入框 */
+            resize: vertical;
         }
         .currency-input {
             position: relative;
@@ -119,17 +130,17 @@
         <div class="form-container">
             <form id="dedicationForm">
                 <div class="form-group">
-                    <label for="name">姓名</label>
+                    <label for="name" class="required">姓名</label>
                     <input type="text" id="name" placeholder="請輸入您的姓名" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="cellGroup">小組</label>
+                    <label for="cellGroup" class="required">小組</label>
                     <input type="text" id="cellGroup" placeholder="請輸入您所屬的小組名稱" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="pastor">區牧</label>
+                    <label for="pastor" class="required">區牧</label>
                     <select id="pastor" required>
                         <option value="" disabled selected>-- 請選擇您的區牧 --</option>
                         <option value="玲霈">玲霈</option>
@@ -145,15 +156,15 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="amount">認獻金額 (NTD)</label>
+                    <label for="amount" class="required">認獻金額 (NTD)</label>
                     <div class="currency-input">
                         <input type="number" id="amount" min="1" placeholder="請輸入認獻金額" required>
                     </div>
                 </div>
 
-                <!-- 📝 新增的備註欄位 -->
+                <!-- 📝 備註欄位（已移除 required，並加上選填標示） -->
                 <div class="form-group">
-                    <label for="notes">備註（代禱事項）</label>
+                    <label for="notes">備註（代禱事項）<span class="optional-text">(選填)</span></label>
                     <textarea id="notes" rows="4" placeholder="如有代禱事項或備註，請寫在這裡..."></textarea>
                 </div>
 
@@ -179,7 +190,7 @@
                 cellGroup: document.getElementById('cellGroup').value,
                 pastor: document.getElementById('pastor').value,
                 amount: document.getElementById('amount').value,
-                notes: document.getElementById('notes').value // 抓取備註內容
+                notes: document.getElementById('notes').value // 就算沒填寫，也會傳送空字串
             };
 
             // 傳送資料到 Google Sheets
